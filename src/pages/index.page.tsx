@@ -8,9 +8,7 @@ import { UserInfo } from "../core/components/UserInfo"
 const Home: BlitzPage = () => {
   return (
     <Layout title="Home">
-      <Suspense fallback="Loading...">
-        <UserInfo />
-      </Suspense>
+      <UserInfo />
     </Layout>
   )
 }
