@@ -1,6 +1,6 @@
 import { vi, describe, it, beforeEach, expect } from "vitest"
 import resetPassword from "./resetPassword"
-import db from "db"
+import db from "../../../../db"
 import { hash256 } from "@blitzjs/auth"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 
@@ -54,21 +54,21 @@ describe("resetPassword mutation", () => {
 
     // Non-existent token
     await expect(
-      resetPassword({ token: "no-token", password: "", passwordConfirmation: "" }, mockCtx)
+      resetPassword({ token: "no-token", password: "", passwordConfirmation: "" }, mockCtx),
     ).rejects.toThrowError()
 
     // Expired token
     await expect(
       resetPassword(
         { token: expiredToken, password: newPassword, passwordConfirmation: newPassword },
-        mockCtx
-      )
+        mockCtx,
+      ),
     ).rejects.toThrowError()
 
     // Good token
     await resetPassword(
       { token: goodToken, password: newPassword, passwordConfirmation: newPassword },
-      mockCtx
+      mockCtx,
     )
 
     // Delete's the token
@@ -78,7 +78,7 @@ describe("resetPassword mutation", () => {
     // Updates user's password
     const updatedUser = await db.user.findFirst({ where: { id: user.id } })
     expect(await SecurePassword.verify(updatedUser!.hashedPassword, newPassword)).toBe(
-      SecurePassword.VALID
+      SecurePassword.VALID,
     )
   })
 })
