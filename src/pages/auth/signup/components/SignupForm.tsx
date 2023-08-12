@@ -25,7 +25,7 @@ export const SignupForm = (props: SignupFormProps) => {
     },
   })
 
-  let onSubmit = async (values) => {
+  const onSubmit = async (values) => {
     try {
       await signupMutation(values)
       props.onSuccess?.()
