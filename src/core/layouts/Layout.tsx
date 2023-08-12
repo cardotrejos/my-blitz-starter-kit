@@ -2,14 +2,30 @@ import Head from "next/head"
 import React, { FC, Suspense } from "react"
 import { BlitzLayout, Routes } from "@blitzjs/next"
 import { Horizontal, Vertical } from "mantine-layout-components"
-import { AppShell, Modal, Navbar, Header, Text, Footer, Anchor } from "@mantine/core"
+import {
+  AppShell,
+  Modal,
+  Navbar,
+  Header,
+  Text,
+  Footer,
+  Anchor,
+  Button,
+  Loader,
+} from "@mantine/core"
 import Link from "next/link"
+import { useMutation } from "@blitzjs/rpc"
+import logout from "@/features/auth/mutations/logout"
+import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
 
 const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
   title,
   children,
 }) => {
+  const [logoutMutation] = useMutation(logout)
   const thisYear = new Date().getFullYear()
+
+  const user = useCurrentUser()
 
   return (
     <>
@@ -26,10 +42,27 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         }*/
         header={
           <Header height={60} p="xs">
-            <Horizontal fullH>
-              <Anchor href={Routes.Home()} color="gray3" component={Link} fw="bold">
+            <Horizontal fullH spaceBetween>
+              <Anchor
+                underline={false}
+                href={Routes.Home()}
+                color="gray.3"
+                component={Link}
+                fw="bold"
+              >
                 My Blitz Starter Kit
               </Anchor>
+              {user && (
+                <Button
+                  onClick={async () => {
+                    await logoutMutation()
+                  }}
+                  size="xs"
+                  variant="light"
+                >
+                  Logout
+                </Button>
+              )}
             </Horizontal>
           </Header>
         }
@@ -50,7 +83,7 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         })}
       >
         <Vertical fullW fullH>
-          <Suspense fallback="Loading...">{children}</Suspense>
+          <Suspense fallback={<Loader />}>{children}</Suspense>
         </Vertical>
       </AppShell>
     </>

@@ -1,29 +1,27 @@
 import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import logout from "@/features/auth/mutations/logout"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { Button } from "@mantine/core"
+import { Button, List, Loader, Text } from "@mantine/core"
+import { Vertical } from "mantine-layout-components"
+import getTodos from "@/features/todos/queries/getTodos"
+import { Suspense } from "react"
 
 export const UserInfo = () => {
   const currentUser = useCurrentUser()
-  const [logoutMutation] = useMutation(logout)
 
   if (!currentUser) return null
   return (
     <>
-      <Button
-        onClick={async () => {
-          await logoutMutation()
-        }}
-      >
-        Logout
-      </Button>
-      <div>
-        User id: <code>{currentUser.id}</code>
-        <br />
-        User role: <code>{currentUser.role}</code>
-      </div>
+      <Vertical>
+        <Text>
+          User id: <code>{currentUser.id}</code>
+        </Text>
+        <Text>
+          User role: <code>{currentUser.role}</code>
+        </Text>
+      </Vertical>
     </>
   )
 }
