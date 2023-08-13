@@ -7,7 +7,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({}, { session: { userId } }) => {
     return db.todo.deleteMany({
-      where: { done: true, userId },
+      where: { userId, done: true },
     })
   },
 )

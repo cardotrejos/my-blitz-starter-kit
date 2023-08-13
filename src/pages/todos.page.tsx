@@ -5,7 +5,6 @@ import { BlitzPage } from "@blitzjs/next"
 import { Suspense, useState } from "react"
 import Layout from "@/core/layouts/Layout"
 import addTodo from "@/features/todos/mutations/addTodo"
-import { notifications } from "@mantine/notifications"
 import { Horizontal, Vertical } from "mantine-layout-components"
 import toggleTodo from "@/features/todos/mutations/toggleTodo"
 import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
@@ -28,7 +27,7 @@ const Todo = ({ todo }) => {
 }
 const Todos = () => {
   const user = useCurrentUser()
-  const [todos, { refetch }] = useQuery(getTodos, {})
+  const [todos] = useQuery(getTodos, {})
   const [todoTitle, setTodoTitle] = useState("")
   const [$addTodo] = useMutation(addTodo, {})
   const [$cleanCompleted] = useMutation(cleanCompleted, {})
