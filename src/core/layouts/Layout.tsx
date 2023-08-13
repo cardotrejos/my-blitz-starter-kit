@@ -53,15 +53,20 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
                 My Blitz Starter Kit
               </Anchor>
               {user && (
-                <Button
-                  onClick={async () => {
-                    await logoutMutation()
-                  }}
-                  size="xs"
-                  variant="light"
-                >
-                  Logout
-                </Button>
+                <Horizontal>
+                  <Text mr="sm" fz="sm">
+                    {user.name}
+                  </Text>
+                  <Button
+                    onClick={async () => {
+                      await logoutMutation()
+                    }}
+                    size="xs"
+                    variant="light"
+                  >
+                    Logout
+                  </Button>
+                </Horizontal>
               )}
             </Horizontal>
           </Header>

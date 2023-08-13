@@ -1,5 +1,4 @@
 import signup from "@/features/auth/mutations/signup"
-import { Signup } from "@/features/auth/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { Vertical } from "mantine-layout-components"
 import { Button, PasswordInput, TextInput, Title } from "@mantine/core"
@@ -48,6 +47,7 @@ export const SignupForm = (props: SignupFormProps) => {
 
       <form onSubmit={form.onSubmit(onSubmit)}>
         <TextInput
+          required
           withAsterisk
           label="Email"
           placeholder="you@email.com"
@@ -55,13 +55,15 @@ export const SignupForm = (props: SignupFormProps) => {
         />
 
         <TextInput
+          required
           withAsterisk
-          label="Username"
-          placeholder="Username"
-          {...form.getInputProps("username")}
+          label="Name"
+          placeholder="Your name here..."
+          {...form.getInputProps("name")}
         />
 
         <PasswordInput
+          required
           withAsterisk
           label="Password"
           placeholder="Password"

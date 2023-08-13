@@ -14,6 +14,11 @@ export default resolver.pipe(
     const todo = await db.todo.create({
       data: {
         title,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     })
 

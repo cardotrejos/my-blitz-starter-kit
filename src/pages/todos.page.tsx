@@ -1,26 +1,37 @@
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getTodos from "@/features/todos/queries/getTodos"
-import { Button, Input, List, Loader, Text } from "@mantine/core"
+import { Button, Checkbox, Input, List, Loader, Text } from "@mantine/core"
 import { BlitzPage } from "@blitzjs/next"
 import { Suspense, useState } from "react"
 import Layout from "@/core/layouts/Layout"
 import addTodo from "@/features/todos/mutations/addTodo"
 import { notifications } from "@mantine/notifications"
-import { Vertical } from "mantine-layout-components"
+import { Horizontal, Vertical } from "mantine-layout-components"
+import toggleTodo from "@/features/todos/mutations/toggleTodo"
+import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
+import cleanCompleted from "@/features/todos/mutations/cleanCompleted"
 
+const Todo = ({ todo }) => {
+  const [$toggleTodo] = useMutation(toggleTodo)
+
+  return (
+    <Horizontal>
+      <Checkbox
+        checked={todo.done}
+        onClick={async () => {
+          await $toggleTodo({ id: todo.id })
+        }}
+      />
+      <Text>{todo.title}</Text>
+    </Horizontal>
+  )
+}
 const Todos = () => {
-  const [todos] = useQuery(getTodos, {})
-
+  const user = useCurrentUser()
+  const [todos, { refetch }] = useQuery(getTodos, {})
   const [todoTitle, setTodoTitle] = useState("")
-
-  const [$addTodo] = useMutation(addTodo, {
-    onSuccess: (todo) => {
-      notifications.show({
-        title: "Todo task added!",
-        message: `${todo.title}`,
-      })
-    },
-  })
+  const [$addTodo] = useMutation(addTodo, {})
+  const [$cleanCompleted] = useMutation(cleanCompleted, {})
 
   return (
     <Vertical>
@@ -38,11 +49,16 @@ const Todos = () => {
       >
         Add Todo
       </Button>
+      <Button
+        onClick={async () => {
+          const result = await $cleanCompleted({})
+        }}
+      >
+        Clean completed
+      </Button>
       <List>
         {todos.map((todo) => (
-          <List.Item key={todo.id}>
-            <Text key={todo.id}>{todo.title}</Text>
-          </List.Item>
+          <Todo key={todo.id} todo={todo} />
         ))}
       </List>
     </Vertical>
