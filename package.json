@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "blitz dev",
+    "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn blitz build",
     "start": "blitz start",
-    "studio": "blitz prisma studio",
     "db:studio": "BROWSER=none yarn blitz prisma studio",
-    "db:migrate": "yarn blitz prisma migrate dev",
-    "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn blitz build"
+    "db:migrate": "yarn blitz prisma migrate dev"
   },
   "prisma": {
     "schema": "db/schema.prisma"
