@@ -7,7 +7,7 @@
     "studio": "blitz prisma studio",
     "db:studio": "BROWSER=none yarn blitz prisma studio",
     "db:migrate": "pnpm blitz prisma migrate dev",
-    "build": "pnpm blitz prisma migrate deploy && pnpm blitz prisma generate && pnpm blitz build"
+    "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn blitz build"
   },
   "prisma": {
     "schema": "db/schema.prisma"
