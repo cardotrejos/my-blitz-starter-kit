@@ -6,7 +6,7 @@
     "start": "blitz start",
     "studio": "blitz prisma studio",
     "db:studio": "BROWSER=none yarn blitz prisma studio",
-    "db:migrate": "pnpm blitz prisma migrate dev",
+    "db:migrate": "yarn blitz prisma migrate dev",
     "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn blitz build"
   },
   "prisma": {
