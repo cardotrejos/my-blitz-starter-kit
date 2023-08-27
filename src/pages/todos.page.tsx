@@ -42,7 +42,7 @@ const Todos = () => {
   const user = useCurrentUser()
   const [todos] = useQuery(getTodos, {})
   const [todoTitle, setTodoTitle] = useState("")
-  const [$addTodo] = useMutation(addTodo, {})
+  const [$addTodo, { isLoading }] = useMutation(addTodo, {})
   const [$cleanCompleted] = useMutation(cleanCompleted, {})
 
   const form = useForm<TodoFormType>({
@@ -57,18 +57,8 @@ const Todos = () => {
           await $addTodo({ ...values })
         })}
       >
-        <Input
-          value={todoTitle}
-          placeholder="Enter todo title"
-          onChange={(e) => {
-            setTodoTitle(e.target.value)
-          }}
-        />
-        <Button
-          onClick={async () => {
-            const result = await $addTodo({ title: todoTitle })
-          }}
-        >
+        <Input {...form.getInputProps("title")} placeholder="Enter todo title" />
+        <Button type="submit" loading={isLoading}>
           Add Todo
         </Button>
       </form>
