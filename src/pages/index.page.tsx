@@ -9,15 +9,11 @@ import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
 import { Vertical } from "mantine-layout-components"
 
 const Home: BlitzPage = () => {
-  const currentUser = useCurrentUser()
+  const user = useCurrentUser()
   return (
     <Layout title="Home">
-      {currentUser && <UserInfo />}
-      {!currentUser && (
-        <Vertical fullH fullW center>
-          <AuthenticationForm />
-        </Vertical>
-      )}
+      {user && <UserInfo />}
+      {!user && <AuthenticationForm />}
     </Layout>
   )
 }

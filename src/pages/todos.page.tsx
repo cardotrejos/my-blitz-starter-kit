@@ -9,8 +9,15 @@ import { Horizontal, Vertical } from "mantine-layout-components"
 import toggleTodo from "@/features/todos/mutations/toggleTodo"
 import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
 import cleanCompleted from "@/features/todos/mutations/cleanCompleted"
+import { ReactFC } from "~/types"
+import { PromiseReturnType } from "blitz"
 
-const Todo = ({ todo }) => {
+type Todos = PromiseReturnType<typeof getTodos>
+type TodoType = Todos[0]
+
+const Todo: ReactFC<{
+  todo: TodoType
+}> = ({ todo }) => {
   const [$toggleTodo] = useMutation(toggleTodo)
 
   return (
@@ -67,9 +74,7 @@ const Todos = () => {
 export const TodosPage: BlitzPage = () => {
   return (
     <Layout>
-      <Suspense fallback={<Loader />}>
-        <Todos />
-      </Suspense>
+      <Todos />
     </Layout>
   )
 }

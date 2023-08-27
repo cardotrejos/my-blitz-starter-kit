@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+import { NotFoundError } from "blitz"
 
 const Input = z.object({
   id: z.string(),
@@ -14,7 +15,7 @@ export default resolver.pipe(
       select: { done: true },
     })
 
-    if (!todo) throw new Error("Todo not found")
+    if (!todo) throw new NotFoundError("Todo not found")
 
     return db.todo.update({
       where: { id },
