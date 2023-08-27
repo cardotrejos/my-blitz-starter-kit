@@ -8,6 +8,7 @@ export const LoginInput = z.object({
   email,
   password: z.string(),
 })
+
 export default resolver.pipe(resolver.zod(LoginInput), async (params, ctx) => {
   // This throws an error if credentials are invalid
   const { email, password } = params

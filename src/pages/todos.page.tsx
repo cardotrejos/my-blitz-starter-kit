@@ -11,6 +11,9 @@ import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
 import cleanCompleted from "@/features/todos/mutations/cleanCompleted"
 import { ReactFC } from "~/types"
 import { PromiseReturnType } from "blitz"
+import { TodoInput } from "@/features/todos/schemas"
+import { z } from "zod"
+import { useForm, zodResolver } from "@mantine/form"
 
 type Todos = PromiseReturnType<typeof getTodos>
 type TodoType = Todos[0]
@@ -32,6 +35,9 @@ const Todo: ReactFC<{
     </Horizontal>
   )
 }
+
+type TodoFormType = z.infer<typeof TodoInput>
+
 const Todos = () => {
   const user = useCurrentUser()
   const [todos] = useQuery(getTodos, {})
@@ -39,22 +45,33 @@ const Todos = () => {
   const [$addTodo] = useMutation(addTodo, {})
   const [$cleanCompleted] = useMutation(cleanCompleted, {})
 
+  const form = useForm<TodoFormType>({
+    validate: zodResolver(TodoInput),
+  })
+
   return (
     <Vertical>
-      <Input
-        value={todoTitle}
-        placeholder="Enter todo title"
-        onChange={(e) => {
-          setTodoTitle(e.target.value)
-        }}
-      />
-      <Button
-        onClick={async () => {
-          const result = await $addTodo({ title: todoTitle })
-        }}
+      {user && <Text>Hi, {user.name}, here are your todos:</Text>}
+      <form
+        onSubmit={form.onSubmit(async (values) => {
+          await $addTodo({ ...values })
+        })}
       >
-        Add Todo
-      </Button>
+        <Input
+          value={todoTitle}
+          placeholder="Enter todo title"
+          onChange={(e) => {
+            setTodoTitle(e.target.value)
+          }}
+        />
+        <Button
+          onClick={async () => {
+            const result = await $addTodo({ title: todoTitle })
+          }}
+        >
+          Add Todo
+        </Button>
+      </form>
       <Button
         onClick={async () => {
           const result = await $cleanCompleted({})

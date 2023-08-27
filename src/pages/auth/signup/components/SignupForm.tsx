@@ -3,7 +3,6 @@ import { useMutation } from "@blitzjs/rpc"
 import { Vertical } from "mantine-layout-components"
 import { Button, PasswordInput, TextInput, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { FORM_ERROR } from "@/core/components/Form"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -25,20 +24,8 @@ export const SignupForm = (props: SignupFormProps) => {
   })
 
   const onSubmit = async (values) => {
-    try {
-      await signupMutation(values)
-      props.onSuccess?.()
-    } catch (error: any) {
-      if (error.name === "P2002" && error.meta?.target?.includes("email")) {
-        return {
-          email: "This email is already being used",
-        }
-      } else {
-        return {
-          [FORM_ERROR]: error.toString(),
-        }
-      }
-    }
+    await signupMutation(values)
+    props.onSuccess?.()
   }
 
   return (

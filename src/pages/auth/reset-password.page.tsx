@@ -24,20 +24,8 @@ const ResetPasswordPage: BlitzPage = () => {
   })
 
   const handleSubmit = async (values) => {
-    try {
-      assert(token, "token is required.")
-      await resetPasswordMutation({ ...values, token })
-    } catch (error: any) {
-      if (error.name === "ResetPasswordError") {
-        return {
-          [FORM_ERROR]: error.message,
-        }
-      } else {
-        return {
-          [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
-        }
-      }
-    }
+    assert(token, "token is required.")
+    await resetPasswordMutation({ ...values, token })
   }
 
   return (
