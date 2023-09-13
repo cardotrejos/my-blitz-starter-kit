@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "blitz dev",
-    "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn blitz build",
+    "email": "cd email/react-email && yarn dev --port 3009",
+    "email-install": "cd email/react-email && yarn install",
+    "build": "yarn blitz prisma migrate deploy && yarn blitz prisma generate && yarn email-install && yarn blitz build",
     "start": "blitz start",
     "db:studio": "BROWSER=none yarn blitz prisma studio",
     "db:migrate": "yarn blitz prisma migrate dev"
@@ -29,6 +31,7 @@
     "@mantine/notifications": "^6.0.19",
     "@mantine/prism": "^6.0.19",
     "@prisma/client": "4.6.1",
+    "@t3-oss/env-nextjs": "^0.6.1",
     "@tabler/icons-react": "^2.30.0",
     "blitz": "2.0.0-beta.31",
     "date-fns": "^2.30.0",
@@ -37,6 +40,7 @@
     "prisma": "4.6.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "resend": "^1.0.0",
     "secure-password": "4.0.0",
     "zod": "3.20.2",
     "zod-error": "^1.5.0"

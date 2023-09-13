@@ -34,7 +34,7 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
       if (process.env.NODE_ENV === "production") {
         // TODO - send the production email, like this:
         // await postmark.sendEmail(msg)
-        throw new Error("No production email implementation in mailers/forgotPasswordMailer")
+        throw new Error("No production email implementation in email/forgotPasswordMailer")
       } else {
         // Preview email in the browser
         const previewEmail = (await import("preview-email")).default
