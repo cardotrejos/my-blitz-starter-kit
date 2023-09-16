@@ -2,7 +2,7 @@ import React from "react"
 import Layout from "@/core/layouts/Layout"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { Vertical } from "mantine-layout-components"
-import { Button, Modal, Text } from "@mantine/core"
+import { Alert, Button, Modal, Text } from "@mantine/core"
 import { useStringParam } from "@/utils/utils"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getUserForProfile from "@/features/users/queries/getUserForProfile"
@@ -14,6 +14,7 @@ import { UpdateProfileInput, UpdateProfileInputType } from "@/features/users/sch
 import { showNotification } from "@mantine/notifications"
 import { useRouter } from "next/router"
 import { EditProfileForm } from "@/features/users/forms/EditProfileForm"
+import { IconAlertCircle } from "@tabler/icons-react"
 
 export const ProfilePage: BlitzPage = () => {
   const username = useStringParam("username")
@@ -81,6 +82,24 @@ export const ProfilePage: BlitzPage = () => {
       </Modal>
       <Layout>
         <Vertical>
+          {isOwner && !currentUser?.emailVerified && (
+            <Alert
+              variant="outline"
+              icon={<IconAlertCircle size="1rem" />}
+              title="Warning!"
+              color="red"
+            >
+              <Vertical>
+                <Text>
+                  Your email address is still not verified. Please check your inbox and spam folder
+                  for the verification email.
+                </Text>
+                <Button color="red" variant="light" size="xs">
+                  Resend verification email
+                </Button>
+              </Vertical>
+            </Alert>
+          )}
           {isOwner && <Button onClick={open}>Edit Profile</Button>}
           <Text>Hello {user.name}</Text>
           <Text>Bio: {user.bio}</Text>

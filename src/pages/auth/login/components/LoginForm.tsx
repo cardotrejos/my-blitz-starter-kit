@@ -47,7 +47,9 @@ export const LoginForm = (props: LoginFormProps) => {
           type="password"
           {...form.getInputProps("password")}
         />
-        <Button type="submit">Login</Button>
+        <Button disabled={!form.isValid} type="submit">
+          Login
+        </Button>
       </form>
 
       <div>

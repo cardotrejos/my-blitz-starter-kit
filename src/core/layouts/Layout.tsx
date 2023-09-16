@@ -61,7 +61,11 @@ const Layout: ReactFC<{
               {user && (
                 <Horizontal center>
                   <Horizontal center spacing="xs">
-                    <Link href={Routes.EditProfilePage()}>
+                    <Link
+                      href={Routes.ProfilePage({
+                        username: user.username,
+                      })}
+                    >
                       <Anchor underline={false} color="gray.3">
                         {user.name}
                       </Anchor>
