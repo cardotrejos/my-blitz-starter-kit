@@ -1,8 +1,6 @@
-import React from "react"
 import { Resend } from "resend"
 import { isDev } from "@/config"
 import { CreateEmailOptions } from "resend/build/src/emails/interfaces"
-import EmailTemplateWelcome from "~/email/react-email/emails/welcome"
 import { nodemailerAppTransport } from "~/email/transports/nodemailer-local-app-transport"
 import { render } from "@react-email/render"
 import { env } from "@/env.mjs"

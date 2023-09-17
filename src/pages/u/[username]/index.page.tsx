@@ -15,6 +15,7 @@ import { showNotification } from "@mantine/notifications"
 import { useRouter } from "next/router"
 import { EditProfileForm } from "@/features/users/forms/EditProfileForm"
 import { IconAlertCircle } from "@tabler/icons-react"
+import requestVerificationEmail from "@/features/auth/mutations/requestVerificationEmail"
 
 export const ProfilePage: BlitzPage = () => {
   const username = useStringParam("username")
@@ -37,6 +38,9 @@ export const ProfilePage: BlitzPage = () => {
   })
 
   const [$updateProfile, { isLoading }] = useMutation(updateProfile)
+
+  const [$requestVerificationEmail, { isLoading: isSendingEmail, isSuccess }] =
+    useMutation(requestVerificationEmail)
 
   const [opened, { open, close }] = useDisclosure(false)
 
@@ -86,7 +90,7 @@ export const ProfilePage: BlitzPage = () => {
             <Alert
               variant="outline"
               icon={<IconAlertCircle size="1rem" />}
-              title="Warning!"
+              title={isSuccess ? "Email sent" : "Warning"}
               color="red"
             >
               <Vertical>
@@ -94,9 +98,25 @@ export const ProfilePage: BlitzPage = () => {
                   Your email address is still not verified. Please check your inbox and spam folder
                   for the verification email.
                 </Text>
-                <Button color="red" variant="light" size="xs">
-                  Resend verification email
-                </Button>
+                {!isSuccess && (
+                  <Button
+                    loading={isSendingEmail}
+                    onClick={async () => {
+                      await $requestVerificationEmail()
+                      showNotification({
+                        color: "green",
+                        title: "Success",
+                        message: "Verification email sent!",
+                      })
+                    }}
+                    color="red"
+                    variant="light"
+                    size="xs"
+                  >
+                    Resend verification email
+                  </Button>
+                )}
+                {isSendingEmail && <Text>The email has been sent.</Text>}
               </Vertical>
             </Alert>
           )}

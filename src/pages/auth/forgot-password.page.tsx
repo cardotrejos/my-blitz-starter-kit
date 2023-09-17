@@ -2,20 +2,20 @@ import Layout from "src/core/layouts/Layout"
 import forgotPassword from "@/features/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { BlitzPage } from "@blitzjs/next"
-import { useForm } from "@mantine/form"
-import { Button, TextInput } from "@mantine/core"
+import { useForm, zodResolver } from "@mantine/form"
+import { Button, TextInput, Title } from "@mantine/core"
+import { Vertical } from "mantine-layout-components"
+import { ForgotPasswordInput, ForgotPasswordInputType } from "@/features/auth/schemas"
+import { notifications } from "@mantine/notifications"
 
 const ForgotPasswordPage: BlitzPage = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
 
-  const form = useForm({
+  const form = useForm<ForgotPasswordInputType>({
     initialValues: {
       email: "",
     },
-
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-    },
+    validate: zodResolver(ForgotPasswordInput),
   })
   let handleSubmit = async (values: { email: string } | undefined) => {
     await forgotPasswordMutation(values)
@@ -23,26 +23,39 @@ const ForgotPasswordPage: BlitzPage = () => {
 
   return (
     <Layout title="Forgot Your Password?">
-      <h1>Forgot your password?</h1>
+      <Title order={3}>Forgot your password?</Title>
 
-      {isSuccess ? (
-        <div>
-          <h2>Request Submitted</h2>
+      {isSuccess && (
+        <Vertical>
+          <Title order={3}>Request Submitted</Title>
           <p>
             If your email is in our system, you will receive instructions to reset your password
             shortly.
           </p>
-        </div>
-      ) : (
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            withAsterisk
-            label="Email"
-            placeholder="you@email.com"
-            {...form.getInputProps("email")}
-          />
+        </Vertical>
+      )}
+      {!isSuccess && (
+        <form
+          onSubmit={form.onSubmit(async (values) => {
+            await forgotPasswordMutation(values)
+            notifications.show({
+              color: "green",
+              title: "Success",
+              message:
+                "If your email is in our system, you will receive instructions to reset your password shortly.",
+            })
+          })}
+        >
+          <Vertical>
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="you@email.com"
+              {...form.getInputProps("email")}
+            />
 
-          <Button type="submit">Login</Button>
+            <Button type="submit">Login</Button>
+          </Vertical>
         </form>
       )}
     </Layout>

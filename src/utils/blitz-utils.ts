@@ -81,6 +81,7 @@ const createToken = async ({ userId, userEmail, tokenType }) => {
 
   return token
 }
+
 export const regenerateToken = async ({
   userId,
   userEmail,

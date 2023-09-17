@@ -2,7 +2,8 @@ import signup from "@/features/auth/mutations/signup"
 import { useMutation } from "@blitzjs/rpc"
 import { Vertical } from "mantine-layout-components"
 import { Button, PasswordInput, TextInput, Title } from "@mantine/core"
-import { useForm } from "@mantine/form"
+import { useForm, zodResolver } from "@mantine/form"
+import { SignupInput } from "@/features/auth/schemas"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -18,9 +19,7 @@ export const SignupForm = (props: SignupFormProps) => {
       password: "",
     },
 
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-    },
+    validate: zodResolver(SignupInput),
   })
 
   const onSubmit = async (values) => {

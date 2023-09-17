@@ -3,9 +3,10 @@ import Link from "next/link"
 import login from "@/features/auth/mutations/login"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
-import { useForm } from "@mantine/form"
+import { useForm, zodResolver } from "@mantine/form"
 import { Button, PasswordInput, TextInput } from "@mantine/core"
 import { Vertical } from "mantine-layout-components"
+import { LoginInput } from "@/features/auth/schemas"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -20,9 +21,7 @@ export const LoginForm = (props: LoginFormProps) => {
       password: "",
     },
 
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-    },
+    validate: zodResolver(LoginInput),
   })
 
   const onSubmit = async (values) => {
