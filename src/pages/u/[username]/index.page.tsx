@@ -11,11 +11,12 @@ import { useDisclosure } from "@mantine/hooks"
 import { useForm, zodResolver } from "@mantine/form"
 import updateProfile from "@/features/users/mutations/updateProfile"
 import { UpdateProfileInput, UpdateProfileInputType } from "@/features/users/schemas"
-import { showNotification } from "@mantine/notifications"
+import { notifications, showNotification } from "@mantine/notifications"
 import { useRouter } from "next/router"
 import { EditProfileForm } from "@/features/users/forms/EditProfileForm"
 import { IconAlertCircle } from "@tabler/icons-react"
 import requestVerificationEmail from "@/features/auth/mutations/requestVerificationEmail"
+import { UploadButton } from "@/core/components/UploadThing"
 
 export const ProfilePage: BlitzPage = () => {
   const username = useStringParam("username")
@@ -123,6 +124,26 @@ export const ProfilePage: BlitzPage = () => {
           {isOwner && <Button onClick={open}>Edit Profile</Button>}
           <Text>Hello {user.name}</Text>
           <Text>Bio: {user.bio}</Text>
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              console.log("Files: ", res)
+              notifications.show({
+                color: "green",
+                title: "Success",
+                message: "File uploaded!",
+              })
+            }}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`)
+              notifications.show({
+                color: "red",
+                title: "Error",
+                message: error.message,
+              })
+            }}
+          />
         </Vertical>
       </Layout>
     </>
