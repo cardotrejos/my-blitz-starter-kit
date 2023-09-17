@@ -22,6 +22,7 @@ export default resolver.pipe(resolver.zod(SignupInput), async ({ email, name, pa
         react: React.createElement(EmailTemplateWelcome, {
           props: {
             name: user.name,
+            emailVerifyUrl: "",
           },
         }),
       })

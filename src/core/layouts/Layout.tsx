@@ -21,8 +21,8 @@ import { useCurrentUser } from "@/features/users/hooks/useCurrentUser"
 import { ReactFC } from "~/types"
 import { IconUserShield } from "@tabler/icons-react"
 import { RootErrorFallback } from "@/core/components/RootErrorFallback"
-import { router } from "next/client"
 import { useRouter } from "next/router"
+import { Conditional } from "@/utils/ConditionalWrap"
 
 const Layout: ReactFC<{
   title?: string
@@ -61,16 +61,23 @@ const Layout: ReactFC<{
               {user && (
                 <Horizontal center>
                   <Horizontal center spacing="xs">
-                    <Link
-                      href={Routes.ProfilePage({
-                        username: user.username,
-                      })}
+                    <Conditional
+                      if={!!user.username}
+                      with={(children) => {
+                        return (
+                          <Link
+                            href={Routes.ProfilePage({
+                              username: user.username as string,
+                            })}
+                          >
+                            {children}
+                          </Link>
+                        )
+                      }}
                     >
-                      <Anchor underline={false} color="gray.3">
-                        {user.name}
-                      </Anchor>
-                    </Link>
-                    {user.role === "ADMIN" && (
+                      <Text>{user.name}</Text>
+                    </Conditional>
+                    {user.isAdmin && (
                       <Tooltip label="Admin" position="bottom">
                         <IconUserShield size={15} />
                       </Tooltip>

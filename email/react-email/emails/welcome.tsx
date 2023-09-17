@@ -24,6 +24,7 @@ const defaultProps = {
 export const EmailTemplateWelcome: React.FC<{
   props: {
     name?: string | null
+    emailVerifyUrl: string
   }
 }> = ({ props = defaultProps }) => {
   const { name } = props
