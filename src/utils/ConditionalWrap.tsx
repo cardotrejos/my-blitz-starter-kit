@@ -11,5 +11,5 @@ export const Conditional: FC<ConditionalWrapProps> = ({
   with: wrapper,
   children,
 }) => {
-  return condition ? wrapper(children) : <>children</>
+  return condition ? wrapper(children) : <> {children} </>
 }
