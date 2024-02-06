@@ -3,10 +3,11 @@ import { Routes } from "@blitzjs/next"
 import { Vertical } from "mantine-layout-components"
 import { Button, Text, Textarea, TextInput } from "@mantine/core"
 import { Form, UseFormReturnType } from "@mantine/form"
-import { showNotification } from "@mantine/notifications"
+import { notifications, showNotification } from "@mantine/notifications"
 import { router } from "next/client"
 import { ReactFC } from "~/types"
 import { UpdateProfileInputType } from "@/features/users/schemas"
+import { UploadButton } from "@/core/components/UploadThing"
 
 export const EditProfileForm: ReactFC<{
   form: UseFormReturnType<UpdateProfileInputType>
@@ -39,6 +40,30 @@ export const EditProfileForm: ReactFC<{
           placeholder="Bio"
           {...form.getInputProps("bio")}
           radius="md"
+        />
+        <UploadButton
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            //const fileKey = res?.[0]?.key
+
+            console.log("Files: ", res)
+            notifications.show({
+              color: "green",
+              title: "Success",
+              message: "File uploaded!",
+            })
+            //form.setFieldValue("avatarImageKey", fileKey)
+          }}
+          onUploadError={(error: Error) => {
+            console.log("Error: ", error.message)
+            // Do something with the error.
+            alert(`ERROR! ${error.message}`)
+            notifications.show({
+              color: "red",
+              title: "Error",
+              message: error.message,
+            })
+          }}
         />
         <Button loading={isSubmitting} type="submit">
           Save
