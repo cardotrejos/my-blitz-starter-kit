@@ -7,7 +7,7 @@ import { notifications, showNotification } from "@mantine/notifications"
 import { router } from "next/client"
 import { ReactFC } from "~/types"
 import { UpdateProfileInputType } from "@/features/users/schemas"
-import { UploadButton } from "@/core/components/UploadThing"
+import { UploadButton } from "@/utils/uploadthing"
 
 export const EditProfileForm: ReactFC<{
   form: UseFormReturnType<UpdateProfileInputType>
