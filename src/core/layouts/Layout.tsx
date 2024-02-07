@@ -24,6 +24,8 @@ import { IconUserShield } from "@tabler/icons-react"
 import { RootErrorFallback } from "@/core/components/RootErrorFallback"
 import { useRouter } from "next/router"
 import { Conditional } from "@/utils/ConditionalWrap"
+import { getAvatarFallbackName, getUploadthingUrl } from "@/utils/image-utils"
+import { UserAvatar } from "@/core/components/UserAvatar"
 
 const Layout: ReactFC<{
   title?: string
@@ -77,12 +79,7 @@ const Layout: ReactFC<{
                       }}
                     >
                       <Horizontal>
-                        <Avatar
-                          src={`https://uploadthing.com/f/${user.avatarImageKey}`}
-                          radius="xl"
-                        >
-                          {user.name}
-                        </Avatar>
+                        <UserAvatar user={user} />
                         <Text>{user.name}</Text>
                       </Horizontal>
                     </Conditional>
