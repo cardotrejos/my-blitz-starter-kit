@@ -5,5 +5,5 @@ export const getUploadthingUrl = (fileKey?: string | null) => {
 export const getAvatarFallbackName = (name?: string | null) => {
   if (!name) return ""
   const [first, second] = name.split(" ")
-  return `${first ? first[0] : ""}${second ? second[0] : ""}`
+  return `${first?.[0]}${second ? second?.[0] : ""}`
 }

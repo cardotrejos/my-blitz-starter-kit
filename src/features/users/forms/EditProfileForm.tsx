@@ -1,19 +1,57 @@
 import React from "react"
-import { Routes } from "@blitzjs/next"
-import { Vertical } from "mantine-layout-components"
-import { Button, Text, Textarea, TextInput } from "@mantine/core"
+import { Horizontal, Vertical } from "mantine-layout-components"
+import {
+  Button,
+  FileInput,
+  Loader,
+  Text,
+  Textarea,
+  Image,
+  TextInput,
+  Indicator,
+  Tooltip,
+  ActionIcon,
+} from "@mantine/core"
 import { Form, UseFormReturnType } from "@mantine/form"
-import { notifications, showNotification } from "@mantine/notifications"
-import { router } from "next/client"
+import { showNotification } from "@mantine/notifications"
 import { ReactFC } from "~/types"
 import { UpdateProfileInputType } from "@/features/users/schemas"
-import { UploadButton } from "@/utils/uploadthing"
+import { IconPhoto, IconX } from "@tabler/icons-react"
+import { useUploadThing } from "@/core/components/UploadThing"
+import { useBoolean } from "react-hanger"
+import { getUploadthingUrl } from "@/utils/image-utils"
 
 export const EditProfileForm: ReactFC<{
   form: UseFormReturnType<UpdateProfileInputType>
   onSubmit: (values: UpdateProfileInputType) => Promise<void>
   isSubmitting: boolean
 }> = ({ onSubmit, form, isSubmitting }) => {
+  const loading = useBoolean(false)
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (files) => {
+      loading.setFalse()
+      showNotification({
+        message: "Image uploaded!",
+        color: "teal",
+        icon: <IconPhoto size={16} />,
+      })
+      const fileKey = files?.[0]?.key
+      if (fileKey) {
+        form.setFieldValue("avatarImageKey", fileKey)
+      }
+    },
+    onUploadError: () => {
+      loading.setFalse()
+      showNotification({
+        message: "Error uploading image",
+        color: "red",
+        icon: <IconPhoto size={16} />,
+      })
+    },
+  })
+
+  const existingAvatarImageKey = form.values.avatarImageKey
+
   return (
     <Form form={form} onSubmit={onSubmit}>
       <Vertical fullW>
@@ -41,30 +79,48 @@ export const EditProfileForm: ReactFC<{
           {...form.getInputProps("bio")}
           radius="md"
         />
-        <UploadButton
-          endpoint="imageUploader"
-          onClientUploadComplete={(res) => {
-            const fileKey = res?.[0]?.key
-
-            console.log("Files: ", res)
-            notifications.show({
-              color: "green",
-              title: "Success",
-              message: "File uploaded!",
-            })
-            form.setFieldValue("avatarImageKey", fileKey)
-          }}
-          onUploadError={(error: Error) => {
-            console.log("Error: ", error.message)
-            // Do something with the error.
-            alert(`ERROR! ${error.message}`)
-            notifications.show({
-              color: "red",
-              title: "Error",
-              message: error.message,
-            })
-          }}
-        />
+        <Vertical>
+          <Horizontal center>
+            <Text size="sm" weight={500}>
+              Profile picture
+            </Text>
+            {loading.value && <Loader size="xs" />}
+          </Horizontal>
+          {existingAvatarImageKey && (
+            <Indicator
+              color="none"
+              label={
+                <Tooltip color="dark" label={"Clear image"}>
+                  <ActionIcon
+                    onClick={() => {
+                      form.setFieldValue("avatarImageKey", "")
+                    }}
+                    size="xs"
+                    variant="light"
+                  >
+                    <IconX size={13} />
+                  </ActionIcon>
+                </Tooltip>
+              }
+            >
+              <Image width="60px" src={getUploadthingUrl(existingAvatarImageKey)} />
+            </Indicator>
+          )}
+          {!existingAvatarImageKey && (
+            <FileInput
+              disabled={loading.value}
+              onChange={(files) => {
+                loading.setTrue()
+                if (files) {
+                  startUpload([files])
+                }
+              }}
+              placeholder="Profile picture"
+              icon={<IconPhoto size={16} />}
+              clearable={true}
+            />
+          )}
+        </Vertical>
         <Button loading={isSubmitting} type="submit">
           Save
         </Button>

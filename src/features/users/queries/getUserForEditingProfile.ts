@@ -11,7 +11,7 @@ export default resolver.pipe(
   async ({}, { session: { userId } }) => {
     let user = await db.user.findUnique({
       where: { id: userId },
-      select: { id: true, name: true, username: true, bio: true },
+      select: { id: true, name: true, username: true, bio: true, avatarImageKey: true },
     })
     if (!user) throw new NotFoundError()
     return user
