@@ -2,7 +2,6 @@ import React from "react"
 import { Horizontal, Vertical } from "mantine-layout-components"
 import {
   Button,
-  FileInput,
   Loader,
   Text,
   Textarea,
@@ -13,13 +12,12 @@ import {
   ActionIcon,
 } from "@mantine/core"
 import { Form, UseFormReturnType } from "@mantine/form"
-import { showNotification } from "@mantine/notifications"
 import { ReactFC } from "~/types"
 import { UpdateProfileInputType } from "@/features/users/schemas"
-import { IconPhoto, IconX } from "@tabler/icons-react"
-import { useUploadThing } from "@/core/components/UploadThing"
+import { IconX } from "@tabler/icons-react"
 import { useBoolean } from "react-hanger"
 import { getUploadthingUrl } from "@/utils/image-utils"
+import { UploadThingFileInput } from "@/core/components/UploadThingFileInput"
 
 export const EditProfileForm: ReactFC<{
   form: UseFormReturnType<UpdateProfileInputType>
@@ -27,28 +25,6 @@ export const EditProfileForm: ReactFC<{
   isSubmitting: boolean
 }> = ({ onSubmit, form, isSubmitting }) => {
   const loading = useBoolean(false)
-  const { startUpload } = useUploadThing("imageUploader", {
-    onClientUploadComplete: (files) => {
-      loading.setFalse()
-      showNotification({
-        message: "Image uploaded!",
-        color: "teal",
-        icon: <IconPhoto size={16} />,
-      })
-      const fileKey = files?.[0]?.key
-      if (fileKey) {
-        form.setFieldValue("avatarImageKey", fileKey)
-      }
-    },
-    onUploadError: () => {
-      loading.setFalse()
-      showNotification({
-        message: "Error uploading image",
-        color: "red",
-        icon: <IconPhoto size={16} />,
-      })
-    },
-  })
 
   const existingAvatarImageKey = form.values.avatarImageKey
 
@@ -79,48 +55,9 @@ export const EditProfileForm: ReactFC<{
           {...form.getInputProps("bio")}
           radius="md"
         />
-        <Vertical>
-          <Horizontal center>
-            <Text size="sm" weight={500}>
-              Profile picture
-            </Text>
-            {loading.value && <Loader size="xs" />}
-          </Horizontal>
-          {existingAvatarImageKey && (
-            <Indicator
-              color="none"
-              label={
-                <Tooltip color="dark" label={"Clear image"}>
-                  <ActionIcon
-                    onClick={() => {
-                      form.setFieldValue("avatarImageKey", "")
-                    }}
-                    size="xs"
-                    variant="light"
-                  >
-                    <IconX size={13} />
-                  </ActionIcon>
-                </Tooltip>
-              }
-            >
-              <Image width="60px" src={getUploadthingUrl(existingAvatarImageKey)} />
-            </Indicator>
-          )}
-          {!existingAvatarImageKey && (
-            <FileInput
-              disabled={loading.value}
-              onChange={(files) => {
-                loading.setTrue()
-                if (files) {
-                  startUpload([files])
-                }
-              }}
-              placeholder="Profile picture"
-              icon={<IconPhoto size={16} />}
-              clearable={true}
-            />
-          )}
-        </Vertical>
+
+        <UploadThingFileInput form={form} name="avatarImageKey" label="Profile picture" />
+
         <Button loading={isSubmitting} type="submit">
           Save
         </Button>
