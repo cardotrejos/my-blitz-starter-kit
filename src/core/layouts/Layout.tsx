@@ -35,6 +35,7 @@ import { UserProfileProgress } from "@/core/components/Header/UserProfileProgres
 import { OnboardingWizard } from "@/core/components/OnboardingWizard"
 import { openContextModal } from "@mantine/modals"
 import { GlobalModal } from "@/modals"
+import { DarkLightSwitch } from "@/core/components/DarkLightSwitch"
 
 const Layout: ReactFC<{
   title?: string
@@ -92,11 +93,12 @@ const Layout: ReactFC<{
                           if={user.isAdmin}
                           with={(children) => (
                             <Indicator
+                              color="none"
                               position="bottom-end"
                               label={
                                 <Tooltip label="Admin" color="dark">
                                   <Box>
-                                    <IconUserShield size={13} />
+                                    <IconUserShield size={15} />
                                   </Box>
                                 </Tooltip>
                               }
@@ -124,6 +126,9 @@ const Layout: ReactFC<{
                       Pro
                     </Badge>
                   </Horizontal>
+
+                  <DarkLightSwitch />
+
                   <Button
                     onClick={async () => {
                       await logoutMutation()
