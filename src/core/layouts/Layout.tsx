@@ -14,6 +14,9 @@ import {
   Loader,
   Tooltip,
   Avatar,
+  Indicator,
+  Box,
+  Badge,
 } from "@mantine/core"
 import Link from "next/link"
 import { useMutation } from "@blitzjs/rpc"
@@ -26,6 +29,12 @@ import { useRouter } from "next/router"
 import { Conditional } from "@/utils/ConditionalWrap"
 import { getAvatarFallbackName, getUploadthingUrl } from "@/utils/image-utils"
 import { UserAvatar } from "@/core/components/UserAvatar"
+import { styles } from "ansi-colors"
+import theme from "prism-react-renderer/themes/*"
+import { UserProfileProgress } from "@/core/components/Header/UserProfileProgress"
+import { OnboardingWizard } from "@/core/components/OnboardingWizard"
+import { openContextModal } from "@mantine/modals"
+import { GlobalModal } from "@/modals"
 
 const Layout: ReactFC<{
   title?: string
@@ -79,15 +88,41 @@ const Layout: ReactFC<{
                       }}
                     >
                       <Horizontal>
-                        <UserAvatar user={user} />
+                        <Conditional
+                          if={user.isAdmin}
+                          with={(children) => (
+                            <Indicator
+                              position="bottom-end"
+                              label={
+                                <Tooltip label="Admin" color="dark">
+                                  <Box>
+                                    <IconUserShield size={13} />
+                                  </Box>
+                                </Tooltip>
+                              }
+                            >
+                              {children}
+                            </Indicator>
+                          )}
+                        >
+                          <UserAvatar user={user} />
+                        </Conditional>
                         <Text>{user.name}</Text>
+                        <UserProfileProgress />
                       </Horizontal>
                     </Conditional>
-                    {user.isAdmin && (
-                      <Tooltip label="Admin" position="bottom">
-                        <IconUserShield size={15} />
-                      </Tooltip>
-                    )}
+                    <Badge
+                      onClick={() => {
+                        openContextModal({
+                          modal: GlobalModal.becomePro,
+                          title: "Become Pro",
+                          innerProps: {},
+                        })
+                      }}
+                      color="red"
+                    >
+                      Pro
+                    </Badge>
                   </Horizontal>
                   <Button
                     onClick={async () => {
@@ -129,6 +164,18 @@ const Layout: ReactFC<{
                 </Vertical>
               }
             >
+              <Modal
+                size="xl"
+                centered={true}
+                closeOnClickOutside={false}
+                closeOnEscape={false}
+                withCloseButton={false}
+                title="Onboarding modal"
+                opened={!!user && !user?.onboarded}
+                onClose={() => {}}
+              >
+                <OnboardingWizard />
+              </Modal>
               {children}
             </Suspense>
           </ErrorBoundary>

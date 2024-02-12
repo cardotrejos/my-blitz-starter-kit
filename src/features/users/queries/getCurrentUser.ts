@@ -14,6 +14,8 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
       emailVerified: true,
       username: true,
       avatarImageKey: true,
+      bio: true,
+      onboarded: true,
     },
   })
 
