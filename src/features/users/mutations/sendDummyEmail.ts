@@ -12,7 +12,7 @@ export default resolver.pipe(
   resolver.zod(Input),
   resolver.authorize(),
   async ({}, { session: { userId } }) => {
-    const user = db.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: userId },
     })
 
