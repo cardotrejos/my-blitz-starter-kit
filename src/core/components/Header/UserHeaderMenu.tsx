@@ -8,6 +8,7 @@ import {
   IconPencil,
   IconUser,
   IconLogout,
+  IconTools,
 } from "@tabler/icons-react"
 import { Conditional } from "@/utils/ConditionalWrap"
 import { UserAvatar } from "@/core/components/UserAvatar"
@@ -56,18 +57,23 @@ const UserHeaderMenu = () => {
 
         <Menu.Dropdown>
           <Menu.Label>Account</Menu.Label>
-          <MenuItemIcon Icon={IconSettings} href={Routes.SettingsPage()} tooltip="Go to settings">
+          <MenuItemLink Icon={IconSettings} href={Routes.SettingsPage()}>
             Settings
-          </MenuItemIcon>
+          </MenuItemLink>
           <MenuItemLink Icon={IconPencil} href={Routes.EditProfilePage()}>
             Edit profile
           </MenuItemLink>
+
           {user.username && (
             <MenuItemLink Icon={IconUser} href={Routes.ProfilePage({ username: user.username })}>
               Go to profile
             </MenuItemLink>
           )}
-
+          {user.isAdmin && (
+            <MenuItemLink Icon={IconUserShield} href={Routes.AdminPage()}>
+              Admin
+            </MenuItemLink>
+          )}
           <Menu.Divider />
           <MenuItemIcon
             color="red.4"

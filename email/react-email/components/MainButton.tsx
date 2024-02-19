@@ -1,9 +1,7 @@
 import React from "react"
 import { Button, ButtonProps } from "@react-email/components"
 
-export const MainButton = (
-  props: JSX.IntrinsicAttributes & Readonly<ButtonProps> & React.RefAttributes<HTMLAnchorElement>,
-) => {
+export const MainButton = (props) => {
   return <Button pX={10} pY={10} style={button} {...props} />
 }
 

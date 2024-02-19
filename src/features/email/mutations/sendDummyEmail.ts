@@ -1,6 +1,6 @@
 import React from "react"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db from "~/db"
 import { z } from "zod"
 import { generateUnsubscribeLink } from "@/utils/email-utils"
 import { sendEmail } from "~/email/sendEmail"

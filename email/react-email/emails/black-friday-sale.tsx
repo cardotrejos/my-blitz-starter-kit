@@ -15,41 +15,36 @@ import { Header } from "../components/Header"
 import { Footer } from "../components/Footer"
 import { emailStyles } from "../styles"
 import EmailTemplateWelcome from "~/email/react-email/emails/welcome"
+import EmailTemplateDummy from "~/email/react-email/emails/dummy"
+import { MainButton } from "~/email/react-email/components/MainButton"
 
 const defaultProps = {
   name: "Test User",
   unsubscribeLink: "",
+  title: "Black Friday savings",
+  mainButtonText: "Shop now",
 }
 
-export const EmailTemplateDummy: React.FC<{
+export const EmailTemplateBlackFridaySale: React.FC<{
   props: {
     name?: string | null
     unsubscribeLink?: string
+    title?: string
+    mainButtonText?: string
   }
 }> = ({ props = defaultProps }) => {
-  const { name, unsubscribeLink } = props
+  const { unsubscribeLink, title, mainButtonText } = props
 
   return (
     <Html>
       <Head />
-      <Preview>Welcome to MyApp</Preview>
+      <Preview>Black friday sales</Preview>
       <Body style={emailStyles.main}>
         <Container style={emailStyles.container}>
           <Section style={emailStyles.box}>
             <Header />
-            <Text style={emailStyles.paragraph}>Dummy email</Text>
-            <Text style={emailStyles.paragraph}>
-              You can view your payments and a variety of other information about your account right
-              from your dashboard.
-            </Text>
-            <Button
-              pX={10}
-              pY={10}
-              style={emailStyles.button}
-              href="https://dashboard.stripe.com/login"
-            >
-              Dummy button
-            </Button>
+            <Text style={emailStyles.paragraph}>{title}</Text>
+            <MainButton href="https://dashboard.stripe.com/login">{mainButtonText}</MainButton>
             <Footer unsubscribeLink={unsubscribeLink} />
           </Section>
         </Container>
@@ -58,4 +53,4 @@ export const EmailTemplateDummy: React.FC<{
   )
 }
 
-export default EmailTemplateDummy
+export default EmailTemplateBlackFridaySale
