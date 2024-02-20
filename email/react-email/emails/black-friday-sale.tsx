@@ -23,6 +23,7 @@ const defaultProps = {
   unsubscribeLink: "",
   title: "Black Friday savings",
   mainButtonText: "Shop now",
+  text: "Shop now",
 }
 
 export const EmailTemplateBlackFridaySale: React.FC<{
@@ -31,9 +32,10 @@ export const EmailTemplateBlackFridaySale: React.FC<{
     unsubscribeLink?: string
     title?: string
     mainButtonText?: string
+    text?: string
   }
 }> = ({ props = defaultProps }) => {
-  const { unsubscribeLink, title, mainButtonText } = props
+  const { unsubscribeLink, text, title, mainButtonText } = props
 
   return (
     <Html>
@@ -44,6 +46,11 @@ export const EmailTemplateBlackFridaySale: React.FC<{
           <Section style={emailStyles.box}>
             <Header />
             <Text style={emailStyles.paragraph}>{title}</Text>
+            <Text
+              dangerouslySetInnerHTML={{
+                __html: text!.replace(/\n/g, "<br/>"),
+              }}
+            />
             <MainButton href="https://dashboard.stripe.com/login">{mainButtonText}</MainButton>
             <Footer unsubscribeLink={unsubscribeLink} />
           </Section>

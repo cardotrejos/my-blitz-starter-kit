@@ -8,8 +8,5 @@ export type Email = {
 
 export enum EmailTemplate {
   Dummy = "dummy",
-  Welcome = "welcome",
-  VerifyEmail = "verify-email",
-  ResetPassword = "reset-password",
   BlackFridaySale = "black-friday-sale",
 }

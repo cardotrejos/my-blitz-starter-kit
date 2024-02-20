@@ -1,6 +1,6 @@
 import { Horizontal, Vertical } from "mantine-layout-components"
-import { ActionIcon, Button, Input, Select } from "@mantine/core"
-import { EmailList } from "@/features/email/types"
+import { ActionIcon, Button, Input, Select, Textarea, Tooltip } from "@mantine/core"
+import { EmailList, SpecialVariables, VariableType } from "@/features/email/types"
 import { useMutation } from "@blitzjs/rpc"
 import sendBulkEmail from "@/features/email/mutations/sendBulkEmail"
 import React from "react"
@@ -8,8 +8,10 @@ import { emailTemplates } from "@/features/email/templates"
 import { EmailTemplate } from "~/email/types"
 import { UseArray, useArray } from "react-hanger"
 import { ReactFC } from "~/types"
-import { convertArrayToObject } from "@/utils/utils"
-import { IconTrash } from "@tabler/icons-react"
+import { convertArrayToObject, updateArrayMemberById } from "@/utils/utils"
+import { IconTrash, IconTextResize, IconPencil } from "@tabler/icons-react"
+import { Send } from "~/email/react-email/.react-email/src/components/send"
+import { remapVariables } from "@/features/email/utils"
 
 const options = [
   { value: EmailList.Marketing, label: "Marketing" },
@@ -17,40 +19,53 @@ const options = [
   { value: EmailList.All, label: "All" },
 ]
 
-type VariableType = {
-  id: string
-  key: string
-  value: string
-}
+// TODO: Implement RichText Editor
 
 const Variable: ReactFC<{
   variable: VariableType
   variables: Variables
 }> = ({ variable, variables }) => {
-  // TODO: extract this into a separate function
-  const updateArrayMemberById = (update: Omit<Partial<VariableType>, "id">) => {
-    const updated = variables.value.map((v) => {
-      if (v.id !== variable.id) return v
-      return { ...v, ...update }
+  const updateVariable = (update: Partial<VariableType>) => {
+    updateArrayMemberById({
+      array: variables,
+      id: variable.id,
+      update,
     })
-    variables.setValue(updated)
+  }
+
+  const writingElementProps = {
+    onChange: (e) => updateVariable({ value: e.target.value }),
+    placeholder: "Value",
+    value: variable.value,
   }
 
   return (
     <Horizontal>
-      <ActionIcon onClick={() => variables.removeById(variable.id)}>
-        <IconTrash />
-      </ActionIcon>
+      <Horizontal spacing="xs" align="center">
+        <ActionIcon variant="light" color="red" onClick={() => variables.removeById(variable.id)}>
+          <IconTrash size="13" />
+        </ActionIcon>
+
+        <Tooltip label={"Click to toggle between textarea and input"}>
+          <ActionIcon
+            variant="light"
+            onClick={() =>
+              updateVariable({
+                isTextArea: !variable.isTextArea,
+              })
+            }
+          >
+            {variable.isTextArea ? <IconTextResize size={13} /> : <IconPencil size={13} />}
+          </ActionIcon>
+        </Tooltip>
+      </Horizontal>
       <Input
-        onChange={(e) => updateArrayMemberById({ key: e.target.value })}
+        onChange={(e) => updateVariable({ key: e.target.value })}
         placeholder="key"
         value={variable.key}
       />
-      <Input
-        onChange={(e) => updateArrayMemberById({ value: e.target.value })}
-        placeholder="value"
-        value={variable.value}
-      />
+      {variable.isTextArea && <Textarea minRows={10} w={300} {...writingElementProps} />}
+      {!variable.isTextArea && <Input {...writingElementProps} />}
     </Horizontal>
   )
 }
@@ -84,16 +99,30 @@ const VariablesManager: ReactFC<{
   )
 }
 
+let specialVariables: SpecialVariables = {
+  userName: "John",
+  userEmail: "qOQpM@example.com",
+  userBio: "I am a user",
+  userId: "123",
+  userUsername: "john",
+  userAvatarImageKey: "123",
+}
+
 export const AdminPageEmailTab = () => {
   const [list, setList] = React.useState<EmailList>(EmailList.Marketing)
   const [template, setTemplate] = React.useState(emailTemplates[0]!.value)
-  const variables = useArray([])
+  const variables = useArray<VariableType>([])
 
   const [$sendBulkEmail] = useMutation(sendBulkEmail)
 
   const foundTemplate = emailTemplates.find((e) => e.value === template)
 
-  const componentProps = convertArrayToObject(variables.value)
+  const remappedVariables = remapVariables({
+    variables: variables.value,
+    specialVariables: specialVariables,
+  })
+
+  const componentProps = convertArrayToObject(remappedVariables)
 
   return (
     <Horizontal align="flex-start" mih="100vh" fullH>
@@ -120,7 +149,20 @@ export const AdminPageEmailTab = () => {
 
         <VariablesManager variables={variables} />
 
-        <Button onClick={() => $sendBulkEmail({ list, template })}>Send Email</Button>
+        <Button
+          onClick={() => {
+            $sendBulkEmail({
+              list,
+              template,
+              variables: variables.value.map((v) => ({
+                key: v.key,
+                value: v.value,
+              })),
+            })
+          }}
+        >
+          Send bulk Email
+        </Button>
       </Vertical>
 
       {foundTemplate && <foundTemplate.component props={componentProps} />}

@@ -29,7 +29,6 @@ export default resolver.pipe(
       react: React.createElement(EmailTemplateDummy, {
         props: {
           name: user.name,
-          emailVerifyUrl: "",
           unsubscribeLink,
         },
       }),

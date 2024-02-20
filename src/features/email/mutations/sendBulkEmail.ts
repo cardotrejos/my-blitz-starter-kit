@@ -3,25 +3,29 @@ import { resolver } from "@blitzjs/rpc"
 import db from "~/db"
 import { z } from "zod"
 import { generateUnsubscribeLink } from "@/utils/email-utils"
-import { sendEmail } from "~/email/sendEmail"
-import EmailTemplateDummy from "~/email/react-email/emails/dummy"
-import { EmailList } from "@/features/email/types"
-import { chunk } from "@/utils/utils"
+import { EmailList, VariableType } from "@/features/email/types"
+import { chunk, convertArrayToObject } from "@/utils/utils"
 import { isDev } from "@/config"
 import { Email, EmailTemplate } from "~/email/types"
 import { sendBulkEmail } from "~/email/sendBulkEmail"
-import e from "express"
 import { emailTemplates } from "@/features/email/templates"
+import { remapVariables } from "@/features/email/utils"
 
 const Input = z.object({
   list: z.nativeEnum(EmailList),
   template: z.nativeEnum(EmailTemplate),
+  variables: z.array(
+    z.object({
+      key: z.string(),
+      value: z.string(),
+    }),
+  ),
 })
 
 export default resolver.pipe(
   resolver.zod(Input),
   resolver.authorize(),
-  async ({ list, template }, { session: { userId } }) => {
+  async ({ list, template, variables }, { session: { userId } }) => {
     const user = await db.user.findUnique({
       where: { id: userId },
     })
@@ -50,6 +54,13 @@ export default resolver.pipe(
           },
         ],
       },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        email: true,
+        avatarImageKey: true,
+      },
     })
 
     let CHUNK_SIZE = isDev ? 3 : 100
@@ -58,6 +69,19 @@ export default resolver.pipe(
     for (const chunk of chunks) {
       const emails: Email[] = await Promise.all(
         chunk.map(async (user): Promise<Email> => {
+          const specialVariables = {
+            userName: user.name,
+            userEmail: user.email,
+            userId: user.id,
+            avatarImageKey: user.avatarImageKey,
+            userUsername: user.username,
+          }
+
+          const remappedVariables = remapVariables({
+            variables,
+            specialVariables,
+          })
+
           let unsubscribeLink = await generateUnsubscribeLink({
             userId: user.id,
             userEmail: user.email,
@@ -70,6 +94,7 @@ export default resolver.pipe(
               props: {
                 name: user.name,
                 unsubscribeLink,
+                ...convertArrayToObject(remappedVariables),
               },
             }),
           }
