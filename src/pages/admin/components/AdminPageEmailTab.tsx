@@ -6,7 +6,7 @@ import sendBulkEmail from "@/features/email/mutations/sendBulkEmail"
 import React from "react"
 import { emailTemplates } from "@/features/email/templates"
 import { EmailTemplate } from "~/email/types"
-import { UseArray, useArray } from "react-hanger"
+import { UseArray, useArray, useInput } from "react-hanger"
 import { ReactFC } from "~/types"
 import { convertArrayToObject, updateArrayMemberById } from "@/utils/utils"
 import { IconTrash, IconTextResize, IconPencil } from "@tabler/icons-react"
@@ -113,6 +113,8 @@ export const AdminPageEmailTab = () => {
   const [template, setTemplate] = React.useState(emailTemplates[0]!.value)
   const variables = useArray<VariableType>([])
 
+  const subject = useInput()
+
   const [$sendBulkEmail] = useMutation(sendBulkEmail)
 
   const foundTemplate = emailTemplates.find((e) => e.value === template)
@@ -134,6 +136,9 @@ export const AdminPageEmailTab = () => {
           value={list}
           onChange={(value) => setList(value as EmailList)}
         />
+
+        <Input placeholder="Subject" {...subject.eventBind} />
+
         <Select
           label="Choose template"
           placeholder="Pick one"
@@ -154,6 +159,7 @@ export const AdminPageEmailTab = () => {
             $sendBulkEmail({
               list,
               template,
+              subject: subject.value,
               variables: variables.value.map((v) => ({
                 key: v.key,
                 value: v.value,

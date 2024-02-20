@@ -10,10 +10,12 @@ import { Email, EmailTemplate } from "~/email/types"
 import { sendBulkEmail } from "~/email/sendBulkEmail"
 import { emailTemplates } from "@/features/email/templates"
 import { remapVariables } from "@/features/email/utils"
+import { react } from "@babel/types"
 
 const Input = z.object({
   list: z.nativeEnum(EmailList),
   template: z.nativeEnum(EmailTemplate),
+  subject: z.string(),
   variables: z.array(
     z.object({
       key: z.string(),
@@ -25,7 +27,7 @@ const Input = z.object({
 export default resolver.pipe(
   resolver.zod(Input),
   resolver.authorize(),
-  async ({ list, template, variables }, { session: { userId } }) => {
+  async ({ list, subject, template, variables }, { session: { userId } }) => {
     const user = await db.user.findUnique({
       where: { id: userId },
     })
@@ -77,6 +79,12 @@ export default resolver.pipe(
             userUsername: user.username,
           }
 
+          let replacedSubject = subject
+
+          for (const key in specialVariables) {
+            replacedSubject = replacedSubject.replace(`{{${key}}}`, specialVariables[key])
+          }
+
           const remappedVariables = remapVariables({
             variables,
             specialVariables,
@@ -89,7 +97,7 @@ export default resolver.pipe(
 
           return {
             to: user.email,
-            subject: `Hey there ${user.name}!`,
+            subject: replacedSubject,
             react: React.createElement(foundEmailTemplate.component, {
               props: {
                 name: user.name,
