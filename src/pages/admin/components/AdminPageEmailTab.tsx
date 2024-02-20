@@ -10,7 +10,6 @@ import { UseArray, useArray, useInput } from "react-hanger"
 import { ReactFC } from "~/types"
 import { convertArrayToObject, updateArrayMemberById } from "@/utils/utils"
 import { IconTrash, IconTextResize, IconPencil } from "@tabler/icons-react"
-import { Send } from "~/email/react-email/.react-email/src/components/send"
 import { remapVariables } from "@/features/email/utils"
 
 const options = [
