@@ -14,8 +14,6 @@ import * as React from "react"
 import { Header } from "../components/Header"
 import { Footer } from "../components/Footer"
 import { emailStyles } from "../styles"
-import EmailTemplateWelcome from "~/email/react-email/emails/welcome"
-import EmailTemplateDummy from "~/email/react-email/emails/dummy"
 import { MainButton } from "~/email/react-email/components/MainButton"
 
 const defaultProps = {
