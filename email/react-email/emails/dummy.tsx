@@ -14,7 +14,6 @@ import * as React from "react"
 import { Header } from "../components/Header"
 import { Footer } from "../components/Footer"
 import { emailStyles } from "../styles"
-import EmailTemplateWelcome from "~/email/react-email/emails/welcome"
 
 const defaultProps = {
   name: "Test User",
@@ -43,8 +42,7 @@ export const EmailTemplateDummy: React.FC<{
               from your dashboard.
             </Text>
             <Button
-              pX={10}
-              pY={10}
+              
               style={emailStyles.button}
               href="https://dashboard.stripe.com/login"
             >

@@ -20,6 +20,7 @@ const anchor = {
 }
 
 const button = {
+  padding: "10px 20px",
   backgroundColor: "#656ee8",
   borderRadius: "5px",
   color: "#fff",

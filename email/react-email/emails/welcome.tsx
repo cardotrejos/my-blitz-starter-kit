@@ -41,8 +41,6 @@ export const EmailTemplateWelcome: React.FC<{
               from your dashboard.
             </Text>
             <Button
-              pX={10}
-              pY={10}
               style={emailStyles.button}
               href="https://dashboard.stripe.com/login"
             >

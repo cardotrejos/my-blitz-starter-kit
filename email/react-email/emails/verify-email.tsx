@@ -34,7 +34,7 @@ export const EmailTemplateVerifyEmail: React.FC<{
             <Text style={emailStyles.paragraph}>
               Hello, you requested this email to verify your account. Please click the button below.
             </Text>
-            <Button pX={10} pY={10} style={emailStyles.button} href={emailVerifyUrl}>
+            <Button style={emailStyles.button} href={emailVerifyUrl}>
               Click here to verify your account
             </Button>
             <Footer />
