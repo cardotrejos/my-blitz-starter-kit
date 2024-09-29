@@ -47,8 +47,8 @@ model User {
 
   // payments
   hasLifetimeAccess Boolean @default(false)
-  Orders            LemonSqueezyOrder[]
-  Subscription      LemonSqueezySubscription?
+  orders            LemonSqueezyOrder[]
+  subscriptions      LemonSqueezySubscription[]
 
   // Settings
 
@@ -127,7 +127,7 @@ model LemonSqueezySubscription {
   subscriptionId String? @unique
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  userId String 
 
   product   LemonSqueezyProduct @relation(fields: [productId], references: [id])
   productId String

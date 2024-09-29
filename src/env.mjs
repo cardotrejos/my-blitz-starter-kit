@@ -11,6 +11,7 @@ export const env = createEnv({
     LEMONSQUEEZY_WEBHOOK_SECRET: z.string(),
     LEMONSQUEEZY_API_KEY: z.string(),
     LEMONSQUEEZY_STORE_ID: z.string(),
+    LEMONSQUEEZY_PRODUCT_ID: z.string(),
   },
   client: {
   },
@@ -23,5 +24,6 @@ export const env = createEnv({
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
+    LEMONSQUEEZY_PRODUCT_ID: process.env.LEMONSQUEEZY_PRODUCT_ID,
   },
 });

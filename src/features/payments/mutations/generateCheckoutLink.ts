@@ -2,7 +2,6 @@ import { resolver } from "@blitzjs/rpc";
 import { z } from "zod";
 import db from "~/db";
 import { env } from "@/env.mjs";
-import { type NewCheckout, type Checkout, createCheckout } from '@lemonsqueezy/lemonsqueezy.js';
 import { createCheckoutLink } from "../lemonClient";
 
 const Input = z.object({

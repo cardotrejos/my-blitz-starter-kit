@@ -1,9 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { validateLemonSqueezyHook } from "./validateLemonSqueezyHook";
-import { LemonEventType } from "./types";
-import { returnError, returnOkay } from "./utils";
-import { onOrderCreated } from "./hooks/onOrderCreated";
+import { validateLemonSqueezyHook } from "@/pages/api/lemon/validateLemonSqueezyHook";
 import getRawBody from "raw-body";
+import { LemonEventType, ResBody } from "@/pages/api/lemon/types";
+import { onOrderCreated } from "@/pages/api/lemon/hooks/onOrderCreated";
+import { returnError, returnOkay } from "@/pages/api/lemon/utils";
+import { onOrderRefunded } from "@/pages/api/lemon/hooks/onOrderRefunded";
+import { onSubscriptionCreated } from "./hooks/onSubscriptionCreated";
+import { onSubscriptionUpdated } from "@/pages/api/lemon/hooks/onSubscriptionUpdated";
+import { onSubscriptionPaymentSuccess } from "@/pages/api/lemon/hooks/onSubscriptionPaymentSuccess";
 
 export const config = {
   api: {
@@ -42,8 +46,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const eventType = event.meta.event_name;
     console.log("🍋: event type", eventType);
 
+    console.log("event", event);
+
     const handlers = {
       [LemonEventType.OrderCreated]: onOrderCreated,
+      [LemonEventType.OrderRefunded]: onOrderRefunded,
+      [LemonEventType.SubCreated]: onSubscriptionCreated,
+      [LemonEventType.SubUpdated]: onSubscriptionUpdated,
+      [LemonEventType.SubPaymentSuccess]: onSubscriptionPaymentSuccess,
     };
 
     const foundHandler = handlers[eventType];
@@ -51,7 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (foundHandler) {
       try {
         await foundHandler({ event });
-        returnOkay(res);
+        return returnOkay(res);
       } catch (err) {
         console.log(`🍋: error in handling ${eventType} event`, err);
         returnError(res);
