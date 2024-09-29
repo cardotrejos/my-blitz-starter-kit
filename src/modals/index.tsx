@@ -8,7 +8,7 @@ export enum GlobalModal {
 
 export const globalModals = {
   [GlobalModal.becomePro]: BecomeProModalComponent,
-  [GlobalModal.becomePro]: ReportBugModalComponent,
+  [GlobalModal.reportBug]: ReportBugModalComponent,
 }
 
 declare module "@mantine/modals" {
